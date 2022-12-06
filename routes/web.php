@@ -22,8 +22,13 @@ Route::middleware(['auth'])->group(function() {
         Route::get('posts/{post:slug}/edit', 'edit')->name('posts.edit');
         Route::patch('posts/{post}', 'update')->name('posts.update');
     });
-    Route::post('/logout', [SessionController::class, 'destroy'])->name('session.destroy');
-    Route::post('/comments', [CommentController::class, 'store']);
+    Route::post('logout', [SessionController::class, 'destroy'])->name('session.destroy');
+    Route::post('comments', [CommentController::class, 'store']);
+
+    Route::controller(ReportController::class)->group(function () {
+        Route::post('reports', 'store')->name('reports.store');
+        Route::patch('reports/{report}', 'update')->name('reports.update');
+    });
 
     Route::controller(UserController::class)->group(function() {
         Route::get('users/{user:username}', 'show')->name('users.show');
@@ -38,6 +43,7 @@ Route::middleware(['auth'])->group(function() {
 
 Route::controller(PostController::class)->group(function() {
     Route::get('/', 'index')->name('home');
+    Route::get('posts', 'getPosts');
     Route::get('posts/{post}', 'show')->name('posts.show');
 });
 
@@ -67,8 +73,17 @@ Route::middleware(['guest'])->group(function() {
 Route::middleware(['can:admin'])->group(function() {
     Route::get('/admin', [DashboardController::class, 'index'])->name('admin.home');
 
-    Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
-    Route::get('/admin/categories', [CategoryController::class, 'index'])->name('admin.categories');
+    Route::controller(UserController::class)->group(function() {
+        Route::get('/admin/users', 'index')->name('admin.users');
+        Route::patch('/admin/users/{user}/change-role', 'changeRole')->name('admin.change-role');
+        Route::delete('/admin/users/{user}', 'destroy')->name('admin.users.destroy');
+    });
     Route::get('/admin/reports', [ReportController::class, 'index'])->name('admin.reports');
     Route::get('/admin/activity', fn() => view('admin.logs.index', [ 'activities' => Activity::latest()->get() ]))->name('admin.activity');
+    
+    Route::controller(CategoryController::class)->group(function() {
+        Route::get('/admin/categories', 'index')->name('admin.categories.index');
+        Route::post('/admin/categories', 'store')->name('admin.categories.store');
+        Route::delete('/admin/categories/{category}', 'destroy')->name('admin.categories.destroy');
+    });
 });

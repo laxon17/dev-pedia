@@ -45,6 +45,11 @@ class User extends Authenticatable
     const ROLE_MODERATOR = 'Moderator';
     const ROLE_ADMINISTRATOR = 'Administrator';
 
+    static $roles = [
+      self::ROLE_ADMINISTRATOR,
+      self::ROLE_MODERATOR  
+    ];
+
     protected $fillable = ['name', 'username'];
 
     public function getActivitylogOptions(): LogOptions

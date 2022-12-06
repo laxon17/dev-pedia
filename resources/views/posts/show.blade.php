@@ -1,10 +1,42 @@
 <x-layout :pageTitle="$post->title">
     <main class="max-w-6xl mx-auto mt-10 lg:mt-20 space-y-6">
         @auth
-            <div title="Report this post" class="cursor-pointer bg-red-300 w-8 border border-red-500 flex items-center justify-center px-6 rounded">
+            <div id="modalTrigger" title="Report this post" class="cursor-pointer bg-red-300 w-8 border border-red-500 flex items-center justify-center px-6 rounded">
                 <span class="material-symbols-outlined text-red-900">
                     warning
                 </span>
+            </div>
+
+            <div id="modal" class="absolute w-64 bg-white border border-gray-500 py-6 px-8 rounded-xl" style="display: none">
+                <form id="reportForm" class="flex flex-col">
+                    @csrf
+                    <input type="hidden" id="post" name="post_id" value="{{ $post->id }}" />
+                    <div class="mb-2">
+                        <input type="radio" name="reason" id="offensive" value="Too Offensive" />
+                        <label for="offensive">Offensive</label>
+                    </div>
+                    <div class="mb-2">
+                        <input type="radio" name="reason" id="hate" value="Hate Speech" />
+                        <label for="hate">Hate speech</label>
+                    </div>
+                    <div class="mb-2">
+                        <input type="radio" name="reason" id="spam" value="Spam" />
+                        <label for="spam">Spam</label>
+                    </div>
+                    <div class="mb-2">
+                        <input type="radio" name="reason" id="copyright" value="Copyright Violation" />
+                        <label for="copyright">Copyright</label>
+                    </div>
+                    <div class="mb-6">
+                        <input type="radio" name="reason" id="other" value="Other">
+                        <label for="other">Other</label>
+                        <input class="p-2 border border-gray-300 rounded-xl" type="text" placeholder="e.g. violence" name="reason" id="otherValue" />
+                        <p id="errorMessage" class="text-red-500"></p>
+                    </div>
+                    <div>
+                        <button class="py-2 px-4 bg-blue-500 text-white uppercase text-sm rounded-xl" id="reportBtn" type="button">SUBMIT</button>
+                    </div>
+                </form>
             </div>
         @endauth
         <article class="max-w-4xl mx-auto lg:grid lg:grid-cols-12 gap-x-10">
@@ -38,7 +70,6 @@
                                 </path>
                             </g>
                         </svg>
-
                         Back to Posts
                     </a>
 

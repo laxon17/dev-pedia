@@ -34,21 +34,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
         location.reload()
     })
+
+    async function postComment(token, data) {
+        return await fetch('/comments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': token
+            },
+            body: JSON.stringify(data)
+        })
+    }
+    
+    function hideMessage() {
+        setTimeout(() => {
+            errorBox.innerText = ''
+        }, 5000)
+    }
 })
 
-async function postComment(token, data) {
-    return await fetch('/comments', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': token
-        },
-        body: JSON.stringify(data)
-    })
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const trigger = document.getElementById('modalTrigger')
+    const modalWindow = document.getElementById('modal')
 
-function hideMessage() {
-    setTimeout(() => {
-        errorBox.innerText = ''
-    }, 5000)
-}
+    modalWindow.style.display = 'none'
+
+    trigger.addEventListener('click', function() {
+        if(modalWindow.style.display === 'none') modalWindow.style.display = 'block'
+        else modalWindow.style.display = 'none'
+    })
+
+    let reasons = document.querySelectorAll('[name="reason"]')
+    const otherReasonField = document.getElementById('otherValue')
+    const reportButton = document.getElementById('reportBtn')
+    const errorBox = document.getElementById('errorMessage')
+    const postId = document.getElementById('post').value
+    const _token = document.querySelector('[name="_token"]').value
+
+    reportButton.disabled = true
+    reportButton.style.backgroundColor = 'gray'
+    otherReasonField.disabled = true
+    let finalReason = ''
+
+    reasons.forEach(reason => {
+        reason.addEventListener('change', () => {
+            reportButton.disabled = false
+            reportButton.style.backgroundColor = ''
+            finalReason = reason.value
+            if(reason.value === 'Other') {
+                otherReasonField.disabled = false
+                finalReason = otherReasonField.value
+            } else {
+                otherReasonField.disabled = true
+                finalReason = reason.value
+            }
+        })
+    })
+
+    reportButton.addEventListener('click', () => {
+        let reportObj = {
+            reason: finalReason,
+            post_id: postId
+        }
+
+        if(finalReason === '') {
+            errorBox.innerText = 'Please write something...'
+            setTimeout(() => {
+                errorBox.innerText = ''
+            }, 3000)
+        } else {
+            fetch('/reports', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': _token
+                },
+                body: JSON.stringify(reportObj)
+            }).then(() => { location.reload() })
+        }
+    })
+})

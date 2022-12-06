@@ -21,6 +21,15 @@ class PostController extends Controller
         ]);
     }
 
+    final public function getPosts()
+    {
+        return response()->json([
+            'posts' => Post::with(['category', 'user'])->latest()->filter(
+                request(['search', 'category', 'user'])
+            )->paginate(10)->withQueryString()
+        ]);
+    }
+
     final public function show(string $slug): View
     {
         return view('posts.show', [

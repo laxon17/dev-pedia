@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Report extends Model
 {
     use HasFactory;
+
+    final public function post()
+    {
+        return $this->belongsTo(Post::class, 'post_id');
+    }
+
+    final public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

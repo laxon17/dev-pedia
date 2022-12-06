@@ -4,7 +4,7 @@
             <h6 class="m-0 font-weight-bold text-primary">User activities</h6>
         </div>
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table-responsive overflow-hidden">
                 <table class="table table-bordered" id="dataTable">
                     <thead>
                         <tr>

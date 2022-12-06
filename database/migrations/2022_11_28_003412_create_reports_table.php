@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use function GuzzleHttp\Promise\queue;
+
 return new class extends Migration
 {
     /**
@@ -18,6 +20,7 @@ return new class extends Migration
             $table->string('reason');
             $table->foreignId('user_id');
             $table->foreignId('post_id');
+            $table->boolean('resolved')->default(false);
             $table->timestamps();
         });
     }

@@ -13,7 +13,13 @@
     <div class="space-y-2 lg:space-y-0 lg:space-x-4 mt-8">
         <!--  Category -->
         <div class="relative lg:inline-flex bg-gray-100 rounded-xl">
-           <x-category-dropdown />
+            <select name="category" id="categorySelect" class="py-2 px-6 bg-gray-100 rounded-xl w-32">
+                <option value="0">All</option>
+                @foreach (\App\Models\Category::all() as $category)
+                    <option value="{{ $category->slug }}">{{ $category->title }}</option>
+                @endforeach
+            </select>
+           {{-- <x-category-dropdown /> --}}
         </div>
 
         <!-- Search -->
@@ -26,6 +32,7 @@
                     type="text" 
                     name="search"
                     value="{{ request('search') ?? '' }}"
+                    id="searchField"
                     placeholder="Find something..."
                     class="bg-transparent outline-none placeholder-black font-semibold text-sm"
                 />

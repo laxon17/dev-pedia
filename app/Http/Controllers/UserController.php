@@ -97,8 +97,32 @@ class UserController extends Controller
             ])
         );
 
-        return redirect(route('users.show', [
+        return redirect(route('users.edit', [
             'user' => $user
         ]))->with('success', 'Username changed successfully!');
+    }
+
+    final public function changeRole(User $user)
+    {
+        $user->update([
+            'role' => request('role')
+        ]);
+
+        return response()->json([
+            'user' => $user
+        ], 200);
+    }
+
+    final public function destroy(User $user)
+    {
+        if($user->avatar !== 'avatars/default.png') {
+            unlink('storage/' . $user->thumbnail);
+        }
+        
+        $user->delete();
+
+        return response()->json([
+            'success' => 'User deleted successfully!'
+        ]);
     }
 }
